@@ -26,7 +26,7 @@ class Camera1 extends CameraController implements Camera.PreviewCallback, Camera
     private static final String TAG = Camera1.class.getSimpleName();
     private static final CameraLogger LOG = CameraLogger.create(TAG);
 
-    private Camera mCamera;
+    public Camera mCamera;
     private boolean mIsBound = false;
 
     private final int mPostFocusResetDelay = 3000;
@@ -479,7 +479,10 @@ class Camera1 extends CameraController implements Camera.PreviewCallback, Camera
                 final boolean outputFlip = mFacing == Facing.FRONT;
                 Camera.Parameters params = mCamera.getParameters();
                 params.setRotation(sensorToOutput);
+
                 mCamera.setParameters(params);
+                if (onPhotoSizeListener != null) onPhotoSizeListener.run();
+
                 mCamera.takePicture(
                         new Camera.ShutterCallback() {
                             @Override
@@ -600,6 +603,7 @@ class Camera1 extends CameraController implements Camera.PreviewCallback, Camera
                     mIsCapturingVideo = true;
                     initMediaRecorder();
                     try {
+                        if (onVideoSizeListener != null) onVideoSizeListener.run();
                         mMediaRecorder.prepare();
                         mMediaRecorder.start();
                     } catch (Exception e) {
@@ -701,6 +705,9 @@ class Camera1 extends CameraController implements Camera.PreviewCallback, Camera
     // -----------------
     // Zoom and simpler stuff.
 
+    public MediaRecorder getMediaRecorder(){
+        return mMediaRecorder;
+    }
 
     @Override
     void setZoom(final float zoom, final PointF[] points, final boolean notify) {

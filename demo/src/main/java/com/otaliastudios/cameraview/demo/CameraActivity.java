@@ -2,6 +2,7 @@ package com.otaliastudios.cameraview.demo;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,16 +17,17 @@ import android.widget.Toast;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraLogger;
 import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.SizeCameraView;
 import com.otaliastudios.cameraview.SessionType;
 import com.otaliastudios.cameraview.Size;
 
 import java.io.File;
+import java.util.List;
 
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener, ControlView.Callback {
 
-    private CameraView camera;
+    private SizeCameraView camera;
     private ViewGroup controlPanel;
 
     private boolean mCapturingPicture;
@@ -34,6 +36,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     // To show stuff in the callback
     private Size mCaptureNativeSize;
     private long mCaptureTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,22 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             ControlView view = (ControlView) group.getChildAt(i);
             view.onCameraOpened(camera);
         }
+
+        List<Camera.Size> previewSizes = camera.getSupportedPreviewSizes();
+        List<Camera.Size> videoSizes = camera.getSupportedVideoSizes();
+        List<Camera.Size> pictureSizes = camera.getSupportedPictureSizes();
+
+
+        Camera.Size videoSize = null;
+        for (Camera.Size size: videoSizes){
+            if (size.width == 640 && size.height == 480){
+                videoSize = size;
+            }
+        }
+
+        camera.setVideoSize(videoSize.width, videoSize.height);
+        camera.setPhotoSize(videoSize.width, videoSize.height);
+
     }
 
     private void onPicture(byte[] jpeg) {
@@ -164,6 +183,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         mCapturingVideo = true;
         message("Recording for 8 seconds...", true);
         camera.startCapturingVideo(null, 8000);
+
+
     }
 
     private void toggleCamera() {

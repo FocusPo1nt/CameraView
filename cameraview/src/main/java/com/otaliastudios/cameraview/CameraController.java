@@ -68,6 +68,9 @@ abstract class CameraController implements
     protected int mState = STATE_STOPPED;
     protected long mVideoMaxSizeInBytes = 0;
 
+    protected Runnable onVideoSizeListener;
+    protected Runnable onPhotoSizeListener;
+
     // Used for testing.
     Task<Void> mZoomTask = new Task<>();
     Task<Void> mExposureCorrectionTask = new Task<>();
@@ -388,6 +391,14 @@ abstract class CameraController implements
 
     final boolean isCapturingVideo() {
         return mIsCapturingVideo;
+    }
+
+    public void setOnPhotoSizeListener(Runnable onPhotoSizeListener) {
+        this.onPhotoSizeListener = onPhotoSizeListener;
+    }
+
+    public void setOnVideoSizeListener(Runnable onVideoSizeListener) {
+        this.onVideoSizeListener = onVideoSizeListener;
     }
 
     //endregion

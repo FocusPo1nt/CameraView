@@ -59,7 +59,7 @@ public class CameraView extends FrameLayout {
     /* for tests */ CameraCallbacks mCameraCallbacks;
     private CameraPreview mCameraPreview;
     private OrientationHelper mOrientationHelper;
-    private CameraController mCameraController;
+    protected CameraController mCameraController;
     private MediaActionSound mSound;
     /* for tests */ List<CameraListener> mListeners = new CopyOnWriteArrayList<>();
     /* for tests */ List<FrameProcessor> mFrameProcessors = new CopyOnWriteArrayList<>();
