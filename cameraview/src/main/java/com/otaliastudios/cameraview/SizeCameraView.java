@@ -53,6 +53,12 @@ public class SizeCameraView extends CameraView{
         return camera.getParameters().getSupportedPreviewSizes();
     }
 
+
+    public void setPreviewSize(CameraController.PreviewSelector selector){
+        getCameraController().setPreviewSize(selector);
+    }
+
+
     public void setPhotoSize(final int width, final int height){
         getCameraController().setOnPhotoSizeListener(new Runnable() {
             @Override
@@ -76,8 +82,5 @@ public class SizeCameraView extends CameraView{
             }
         });
     }
-
-
-
 
 }

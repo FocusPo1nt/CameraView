@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class CameraController implements
+public abstract class CameraController implements
         CameraPreview.SurfaceCallback,
         FrameManager.BufferCallback,
         Thread.UncaughtExceptionHandler {
@@ -56,6 +56,7 @@ abstract class CameraController implements
     protected File mVideoFile;
     protected Size mPictureSize;
     protected Size mPreviewSize;
+    protected PreviewSelector previewSelector;
     protected int mPreviewFormat;
 
     protected int mSensorOffset;
@@ -401,6 +402,10 @@ abstract class CameraController implements
         this.onVideoSizeListener = onVideoSizeListener;
     }
 
+    public void setPreviewSize(PreviewSelector selector){
+        this.previewSelector = selector;
+    }
+
     //endregion
 
     //region Orientation utils
@@ -486,6 +491,10 @@ abstract class CameraController implements
     }
 
     protected final Size computePreviewSize(List<Size> previewSizes) {
+
+        if (previewSelector != null){
+            return previewSelector.selectPreviewSize(previewSizes);
+        }
         // instead of flipping everything to the view world, we can just flip the
         // surface size to the sensor world
         boolean flip = shouldFlipSizes();
@@ -551,5 +560,9 @@ abstract class CameraController implements
         }
     }
 
+
+    public interface PreviewSelector{
+        Size selectPreviewSize(List<Size> previewSizes);
+    }
     //endregion
 }

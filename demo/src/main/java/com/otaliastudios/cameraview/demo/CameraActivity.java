@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.otaliastudios.cameraview.CameraController;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraLogger;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -93,10 +94,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             view.onCameraOpened(camera);
         }
 
-        List<Camera.Size> previewSizes = camera.getSupportedPreviewSizes();
         List<Camera.Size> videoSizes = camera.getSupportedVideoSizes();
-        List<Camera.Size> pictureSizes = camera.getSupportedPictureSizes();
-
 
         Camera.Size videoSize = null;
         for (Camera.Size size: videoSizes){
@@ -222,6 +220,14 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onResume() {
         super.onResume();
+
+        camera.setPreviewSize(new CameraController.PreviewSelector() {
+            @Override
+            public Size selectPreviewSize(List<Size> previewSizes) {
+                return previewSizes.get(previewSizes.size()-1);
+            }
+        });
+
         camera.start();
     }
 
